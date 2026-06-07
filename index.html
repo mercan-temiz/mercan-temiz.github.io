@@ -1,12 +1,845 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Website</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AnKa İttifakı — Anadolu Kartalları</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Rajdhani:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0a0a0a;
+      --bg2:       #111111;
+      --bg3:       #161616;
+      --border:    #222222;
+      --orange:    #d4581e;
+      --orange2:   #b5451b;
+      --orange3:   #8a3214;
+      --text:      #e0d8cc;
+      --muted:     #888880;
+      --subtle:    #444440;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,10,10,0.96);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      height: 60px;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+    }
+
+    .nav-logo svg { width: 36px; height: 36px; flex-shrink: 0; }
+
+    .nav-logo-text {
+      font-family: 'Oswald', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--orange);
+      letter-spacing: 4px;
+    }
+
+    .nav-logo-sub {
+      font-size: 9px;
+      color: var(--subtle);
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      margin-top: -3px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 0;
+      list-style: none;
+    }
+
+    .nav-links li a {
+      display: block;
+      padding: 0 16px;
+      height: 60px;
+      line-height: 60px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 600;
+      transition: color 0.2s;
+      border-bottom: 2px solid transparent;
+    }
+
+    .nav-links li a:hover,
+    .nav-links li a.active {
+      color: var(--orange);
+      border-bottom-color: var(--orange);
+    }
+
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+
+    .lang-btn {
+      background: transparent;
+      border: 1px solid var(--orange3);
+      color: var(--orange);
+      padding: 5px 14px;
+      font-size: 11px;
+      letter-spacing: 2px;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: background 0.2s;
+    }
+
+    .lang-btn:hover { background: var(--orange3); }
+
+    /* ── SECTIONS ── */
+    section { display: none; position: relative; z-index: 1; }
+    section.active { display: block; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: calc(100vh - 60px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 60px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 50% at 50% 40%, rgba(180,69,27,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-emblem svg {
+      width: 110px;
+      height: 110px;
+      filter: drop-shadow(0 0 24px rgba(212,88,30,0.35));
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { filter: drop-shadow(0 0 24px rgba(212,88,30,0.35)); }
+      50%       { filter: drop-shadow(0 0 40px rgba(212,88,30,0.55)); }
+    }
+
+    .hero-tag {
+      margin-top: 28px;
+      font-size: 11px;
+      letter-spacing: 5px;
+      color: var(--orange2);
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .hero-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: clamp(52px, 10vw, 88px);
+      font-weight: 700;
+      color: var(--orange);
+      letter-spacing: 10px;
+      text-transform: uppercase;
+      line-height: 1;
+      margin: 8px 0 4px;
+    }
+
+    .hero-subtitle {
+      font-family: 'Oswald', sans-serif;
+      font-size: 15px;
+      letter-spacing: 5px;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .hero-divider {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 0 auto 24px;
+      width: 280px;
+    }
+
+    .hero-divider-line { flex: 1; height: 1px; background: var(--border); }
+    .hero-divider-icon { color: var(--orange2); font-size: 12px; }
+
+    .hero-desc {
+      font-size: 17px;
+      color: var(--muted);
+      max-width: 500px;
+      line-height: 1.7;
+      margin-bottom: 40px;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 0;
+      border: 1px solid var(--border);
+    }
+
+    .hero-stat {
+      padding: 16px 32px;
+      border-right: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .hero-stat:last-child { border-right: none; }
+
+    .hero-stat-num {
+      font-family: 'Oswald', sans-serif;
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--orange);
+    }
+
+    .hero-stat-label {
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--subtle);
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      border-bottom: 1px solid var(--border);
+      padding: 48px 32px 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 80px; height: 2px;
+      background: var(--orange);
+    }
+
+    .page-header-tag {
+      font-size: 10px;
+      letter-spacing: 4px;
+      color: var(--orange2);
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .page-header h1 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 40px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    .page-header p {
+      color: var(--muted);
+      margin-top: 8px;
+      font-size: 15px;
+      max-width: 560px;
+    }
+
+    /* ── CONTENT CONTAINER ── */
+    .content { max-width: 860px; margin: 0 auto; padding: 48px 32px 80px; }
+
+    /* ── RULES ── */
+    .rules-block { margin-bottom: 40px; }
+
+    .rules-block-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: 14px;
+      letter-spacing: 3px;
+      color: var(--orange);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .rule-item {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .rule-item:last-child { border-bottom: none; }
+
+    .rule-num {
+      font-family: 'Oswald', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--orange2);
+      min-width: 28px;
+      padding-top: 1px;
+      letter-spacing: 1px;
+    }
+
+    .rule-text { font-size: 15px; color: var(--text); line-height: 1.5; }
+
+    /* ── ANNOUNCEMENTS ── */
+    .ann-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--orange);
+      margin-bottom: 20px;
+      padding: 22px 24px;
+    }
+
+    .ann-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .ann-date {
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: var(--orange2);
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .ann-badge {
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      background: var(--orange3);
+      color: var(--orange);
+      border-radius: 2px;
+    }
+
+    .ann-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .ann-body { font-size: 15px; color: var(--muted); line-height: 1.6; }
+
+    /* ── LOTTERY ── */
+    .lottery-winner-box {
+      background: var(--bg2);
+      border: 1px solid var(--orange3);
+      padding: 32px;
+      text-align: center;
+      margin-bottom: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .lottery-winner-box::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--orange), transparent);
+    }
+
+    .lottery-week-label {
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .lottery-winner-name {
+      font-family: 'Oswald', sans-serif;
+      font-size: 42px;
+      font-weight: 700;
+      color: var(--orange);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+    }
+
+    .lottery-winner-sub {
+      font-size: 12px;
+      letter-spacing: 2px;
+      color: var(--subtle);
+      text-transform: uppercase;
+      margin-top: 6px;
+    }
+
+    .lottery-how {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      padding: 28px;
+      margin-bottom: 32px;
+    }
+
+    .lottery-how-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: 14px;
+      letter-spacing: 3px;
+      color: var(--orange);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .lottery-step {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .lottery-step:last-child { border-bottom: none; }
+
+    .lottery-step-num {
+      width: 28px; height: 28px;
+      border: 1px solid var(--orange3);
+      color: var(--orange);
+      font-family: 'Oswald', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .lottery-step-text { font-size: 15px; color: var(--muted); padding-top: 4px; line-height: 1.5; }
+
+    .screenshot-placeholder {
+      border: 1px dashed var(--subtle);
+      padding: 40px;
+      text-align: center;
+      color: var(--subtle);
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-top: 24px;
+    }
+
+    /* ── GUIDES ── */
+    .guide-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin-bottom: 40px;
+    }
+
+    .guide-card {
+      background: var(--bg2);
+      padding: 24px 22px;
+      transition: background 0.2s;
+    }
+
+    .guide-card:hover { background: var(--bg3); }
+
+    .guide-card-icon {
+      font-size: 22px;
+      color: var(--orange2);
+      margin-bottom: 12px;
+    }
+
+    .guide-card-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .guide-card-text { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 24px 32px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--subtle);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      position: relative;
+      z-index: 1;
+    }
+
+    footer span { color: var(--orange2); }
+  </style>
 </head>
 <body>
-  <h1>Hello, World!</h1>
-  <p>My website is live!</p>
+
+<nav>
+  <div class="nav-logo" onclick="showSection('home')">
+    <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="18" cy="18" r="17" stroke="#b5451b" stroke-width="1.2" fill="#0a0a0a"/>
+      <path d="M18 6 L9 19 L13 18 L11 30 L18 23 L25 30 L23 18 L27 19 Z" fill="#b5451b"/>
+      <circle cx="18" cy="14" r="2.5" fill="#d4581e"/>
+      <path d="M5 15 L12 17.5 M31 15 L24 17.5" stroke="#b5451b" stroke-width="1.2" stroke-linecap="round"/>
+    </svg>
+    <div>
+      <div class="nav-logo-text">AnKa</div>
+      <div class="nav-logo-sub">Anadolu Kartalları</div>
+    </div>
+  </div>
+
+  <ul class="nav-links">
+    <li><a href="#" class="active" onclick="showSection('home',this)" data-tr="Ana Sayfa" data-en="Home">Ana Sayfa</a></li>
+    <li><a href="#" onclick="showSection('rules',this)" data-tr="Kurallar" data-en="Rules">Kurallar</a></li>
+    <li><a href="#" onclick="showSection('announcements',this)" data-tr="Duyurular" data-en="Announcements">Duyurular</a></li>
+    <li><a href="#" onclick="showSection('lottery',this)" data-tr="Çekiliş" data-en="Lottery">Çekiliş</a></li>
+    <li><a href="#" onclick="showSection('guides',this)" data-tr="Rehber" data-en="Guides">Rehber</a></li>
+  </ul>
+
+  <div class="nav-right">
+    <button class="lang-btn" onclick="toggleLang()">TR / EN</button>
+  </div>
+</nav>
+
+<!-- ═══════════════ HOME ═══════════════ -->
+<section id="home" class="active">
+  <div class="hero">
+    <div class="hero-emblem">
+      <svg viewBox="0 0 110 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="55" cy="55" r="52" stroke="#b5451b" stroke-width="1.5" fill="#0a0a0a"/>
+        <circle cx="55" cy="55" r="46" stroke="#8a3214" stroke-width="0.5" fill="none"/>
+        <path d="M55 18 L36 50 L44 48 L40 82 L55 68 L70 82 L66 48 L74 50 Z" fill="#b5451b"/>
+        <path d="M55 18 L36 50 L44 48 L40 82 L55 68 L70 82 L66 48 L74 50 Z" fill="url(#eaglegrad)"/>
+        <circle cx="55" cy="38" r="6" fill="#d4581e"/>
+        <path d="M18 40 L38 46 M92 40 L72 46" stroke="#8a3214" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M22 55 L38 58 M88 55 L72 58" stroke="#8a3214" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
+        <defs>
+          <linearGradient id="eaglegrad" x1="55" y1="18" x2="55" y2="82" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#d4581e"/>
+            <stop offset="100%" stop-color="#8a3214"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+
+    <div class="hero-tag" data-tr="Last Z Survival Shooter — İttifak" data-en="Last Z Survival Shooter — Alliance">Last Z Survival Shooter — İttifak</div>
+    <div class="hero-title">AnKa</div>
+    <div class="hero-subtitle" data-tr="Anadolu Kartalları" data-en="Anatolian Eagles">Anadolu Kartalları</div>
+
+    <div class="hero-divider">
+      <div class="hero-divider-line"></div>
+      <div class="hero-divider-icon">✦</div>
+      <div class="hero-divider-line"></div>
+    </div>
+
+    <p class="hero-desc" data-tr="Hayatta kalmak için savaş, zafer için birleş. Anka İttifakı; birlikte güçlenen, birlikte büyüyen, birlikte zafere ulaşan bir topluluktur. Kıyametin ortasında kartallar gibi yükseliyoruz." data-en="Fight to survive, unite for victory. The Anka Alliance is a community that grows stronger together, rises together, and conquers together. In the heart of the apocalypse, we soar like eagles.">
+      Hayatta kalmak için savaş, zafer için birleş. Anka İttifakı; birlikte güçlenen, birlikte büyüyen, birlikte zafere ulaşan bir topluluktur. Kıyametin ortasında kartallar gibi yükseliyoruz.
+    </p>
+
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-num">AnKa</div>
+        <div class="hero-stat-label" data-tr="İttifak Adı" data-en="Alliance Name">İttifak Adı</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">🦅</div>
+        <div class="hero-stat-label" data-tr="Anadolu Kartalları" data-en="Anatolian Eagles">Anadolu Kartalları</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">TR</div>
+        <div class="hero-stat-label" data-tr="Ana Dil" data-en="Main Language">Ana Dil</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ RULES ═══════════════ -->
+<section id="rules">
+  <div class="page-header">
+    <div class="page-header-tag" data-tr="İttifak Kuralları" data-en="Alliance Rules">İttifak Kuralları</div>
+    <h1 data-tr="Kurallar" data-en="Rules">Kurallar</h1>
+    <p data-tr="Hep birlikte güçlenmek için lütfen bunları düzenli uygulayın!" data-en="Please follow these regularly so we can all grow stronger together!">Hep birlikte güçlenmek için lütfen bunları düzenli uygulayın!</p>
+  </div>
+
+  <div class="content">
+    <div class="rules-block">
+      <div class="rules-block-title" data-tr="⚔ Oyun İçi Kurallar" data-en="⚔ In-Game Rules">⚔ Oyun İçi Kurallar</div>
+
+      <div class="rule-item">
+        <div class="rule-num">01</div>
+        <div class="rule-text" data-tr="'Yardım eli' gördüğünüzde tıklayın — takım arkadaşlarınıza destek olun." data-en="When you see a 'helping hand', tap it — support your teammates.">
+          'Yardım eli' gördüğünüzde tıklayın — takım arkadaşlarınıza destek olun.
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">02</div>
+        <div class="rule-text" data-tr="Düzenli bağış yapmayı unutmayın. İttifakın gelişimi herkese bağlı." data-en="Don't forget to donate regularly. The alliance's growth depends on everyone.">
+          Düzenli bağış yapmayı unutmayın. İttifakın gelişimi herkese bağlı.
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">03</div>
+        <div class="rule-text" data-tr="Duyuruları takip edin ve uygulayın. Önemli bilgiler buradan paylaşılır." data-en="Follow and act on announcements. Important information is shared here.">
+          Duyuruları takip edin ve uygulayın. Önemli bilgiler buradan paylaşılır.
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">04</div>
+        <div class="rule-text" data-tr="İttifak etkinliklerine aktif olarak katılın ve katkıda bulunun." data-en="Actively participate and contribute to alliance events.">
+          İttifak etkinliklerine aktif olarak katılın ve katkıda bulunun.
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">05</div>
+        <div class="rule-text" data-tr="Saldırı altındaki bir ittifak üyesine destek verin. Takım olarak oynuyoruz." data-en="Reinforce alliance members who are under attack. We play as a team.">
+          Saldırı altındaki bir ittifak üyesine destek verin. Takım olarak oynuyoruz.
+        </div>
+      </div>
+    </div>
+
+    <div class="rules-block">
+      <div class="rules-block-title" data-tr="🤝 Davranış Kuralları" data-en="🤝 Code of Conduct">🤝 Davranış Kuralları</div>
+
+      <div class="rule-item">
+        <div class="rule-num">06</div>
+        <div class="rule-text" data-tr="Küfür yasaktır. Her türlü argo ve hakaret içeren dil kesinlikle kabul edilmez." data-en="Swearing is forbidden. All offensive and abusive language is strictly prohibited.">
+          Küfür yasaktır. Her türlü argo ve hakaret içeren dil kesinlikle kabul edilmez.
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">07</div>
+        <div class="rule-text" data-tr="Zorbalık ve tacize kesinlikle izin verilmez. Herkese saygılı olun." data-en="Bullying and harassment are strictly not allowed. Treat everyone with respect.">
+          Zorbalık ve tacize kesinlikle izin verilmez. Herkese saygılı olun.
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">08</div>
+        <div class="rule-text" data-tr="Dürüst ve adil bir oyuncu olun. Hile ve istismar ittifak onuruna yakışmaz." data-en="Be an honest and fair player. Cheating and exploitation are unworthy of alliance honour.">
+          Dürüst ve adil bir oyuncu olun. Hile ve istismar ittifak onuruna yakışmaz.
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">09</div>
+        <div class="rule-text" data-tr="Anlaşmazlıkları sakin ve yapıcı bir şekilde çözün. Liderlik gerektiğinde devreye girer." data-en="Resolve disagreements calmly and constructively. Leadership steps in when needed.">
+          Anlaşmazlıkları sakin ve yapıcı bir şekilde çözün. Liderlik gerektiğinde devreye girer.
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">10</div>
+        <div class="rule-text" data-tr="İttifak liderliğine saygı gösterin ve kararlarına uyun." data-en="Respect alliance leadership and abide by their decisions.">
+          İttifak liderliğine saygı gösterin ve kararlarına uyun.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ ANNOUNCEMENTS ═══════════════ -->
+<section id="announcements">
+  <div class="page-header">
+    <div class="page-header-tag" data-tr="Haftalık Güncellemeler" data-en="Weekly Updates">Haftalık Güncellemeler</div>
+    <h1 data-tr="Duyurular" data-en="Announcements">Duyurular</h1>
+    <p data-tr="İttifak haberlerini ve önemli güncellemeleri buradan takip edin." data-en="Follow alliance news and important updates here.">İttifak haberlerini ve önemli güncellemeleri buradan takip edin.</p>
+  </div>
+
+  <div class="content">
+    <div class="ann-card">
+      <div class="ann-meta">
+        <div class="ann-date">7 Haziran 2026</div>
+        <div class="ann-badge" data-tr="Yeni" data-en="New">Yeni</div>
+      </div>
+      <div class="ann-title" data-tr="Haftalık Duyuru #1" data-en="Weekly Announcement #1">Haftalık Duyuru #1</div>
+      <div class="ann-body" data-tr="Bu alan haftalık duyurular için kullanılacaktır. Liderlik tarafından düzenli olarak güncellenecektir. Tüm üyeler duyuruları takip etmeli ve gerekli aksiyonları almalıdır." data-en="This area will be used for weekly announcements. It will be updated regularly by leadership. All members should follow announcements and take the necessary actions.">
+        Bu alan haftalık duyurular için kullanılacaktır. Liderlik tarafından düzenli olarak güncellenecektir. Tüm üyeler duyuruları takip etmeli ve gerekli aksiyonları almalıdır.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ LOTTERY ═══════════════ -->
+<section id="lottery">
+  <div class="page-header">
+    <div class="page-header-tag" data-tr="Pazar Çekilişi" data-en="Sunday Draw">Pazar Çekilişi</div>
+    <h1 data-tr="Gezgin Kampı Çekilişi" data-en="Wanderer Camp Lottery">Gezgin Kampı Çekilişi</h1>
+    <p data-tr="Her Pazar yapılan çekiliş ile bu haftanın kazananı belirlenir." data-en="The weekly draw every Sunday determines this week's winner.">Her Pazar yapılan çekiliş ile bu haftanın kazananı belirlenir.</p>
+  </div>
+
+  <div class="content">
+    <div class="lottery-winner-box">
+      <div class="lottery-week-label" data-tr="Bu Haftanın Kazananı" data-en="This Week's Winner">Bu Haftanın Kazananı</div>
+      <div class="lottery-winner-name" id="winner-name">—</div>
+      <div class="lottery-winner-sub" data-tr="Kazanan yakında açıklanacak" data-en="Winner to be announced soon">Kazanan yakında açıklanacak</div>
+    </div>
+
+    <div class="lottery-how">
+      <div class="lottery-how-title" data-tr="Nasıl Çalışır?" data-en="How Does It Work?">Nasıl Çalışır?</div>
+
+      <div class="lottery-step">
+        <div class="lottery-step-num">1</div>
+        <div class="lottery-step-text" data-tr="Her Pazar günü bir çekiliş yapılır ve kazanan ilan edilir." data-en="A draw is held every Sunday and the winner is announced.">
+          Her Pazar günü bir çekiliş yapılır ve kazanan ilan edilir.
+        </div>
+      </div>
+
+      <div class="lottery-step">
+        <div class="lottery-step-num">2</div>
+        <div class="lottery-step-text" data-tr="Gezgin kampı paketi olan tüm üyeler, bir sonraki çekilişe kadar haftada en az bir gezgin kampı tüccarını kazanana gönderir." data-en="All members with a wanderer camp packet send at least one wanderer camp trader to the winner each week until the next draw.">
+          Gezgin kampı paketi olan tüm üyeler, bir sonraki çekilişe kadar haftada en az bir gezgin kampı tüccarını kazanana gönderir.
+        </div>
+      </div>
+
+      <div class="lottery-step">
+        <div class="lottery-step-num">3</div>
+        <div class="lottery-step-text" data-tr="Kazanan kişi, o hafta boyunca tüm ittifak üyelerinin gönderdiği gezgin kampı tüccarlarını kazanır!" data-en="The winner receives all the wanderer camp traders sent by alliance members throughout the week!">
+          Kazanan kişi, o hafta boyunca tüm ittifak üyelerinin gönderdiği gezgin kampı tüccarlarını kazanır!
+        </div>
+      </div>
+    </div>
+
+    <div class="screenshot-placeholder" data-tr="📸 Ekran görüntüleri yakında eklenecek" data-en="📸 Screenshots coming soon">
+      📸 Ekran görüntüleri yakında eklenecek
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ GUIDES ═══════════════ -->
+<section id="guides">
+  <div class="page-header">
+    <div class="page-header-tag" data-tr="Stratejiler & İpuçları" data-en="Strategies & Tips">Stratejiler & İpuçları</div>
+    <h1 data-tr="Rehber" data-en="Guides">Rehber</h1>
+    <p data-tr="Last Z'de daha hızlı büyümek ve ittifaka daha iyi katkı sağlamak için ipuçları." data-en="Tips to grow faster in Last Z and contribute better to the alliance.">Last Z'de daha hızlı büyümek ve ittifaka daha iyi katkı sağlamak için ipuçları.</p>
+  </div>
+
+  <div class="content">
+    <div class="guide-grid">
+      <div class="guide-card">
+        <div class="guide-card-icon">🏛</div>
+        <div class="guide-card-title" data-tr="HQ Önceliği" data-en="HQ First">HQ Önceliği</div>
+        <div class="guide-card-text" data-tr="Karargahınız (HQ) her şeydir — seviyesi diğer tüm binaların maksimum seviyesini belirler. HQ yükseltmelerine öncelik verin ve diğer binaları eşit yükseltmeye çalışmayın." data-en="Your Headquarters (HQ) is everything — its level determines the maximum level of every other building. Prioritise HQ upgrades and don't try to level all buildings equally.">
+          Karargahınız (HQ) her şeydir — seviyesi diğer tüm binaların maksimum seviyesini belirler. HQ yükseltmelerine öncelik verin ve diğer binaları eşit yükseltmeye çalışmayın.
+        </div>
+      </div>
+
+      <div class="guide-card">
+        <div class="guide-card-icon">🔬</div>
+        <div class="guide-card-title" data-tr="Araştırma Stratejisi" data-en="Research Strategy">Araştırma Stratejisi</div>
+        <div class="guide-card-text" data-tr="Önce rozet gerektirmeyen teknolojilere odaklanın. İnşaat, eğitim ve temel stat bonusları veren araştırmalar erken oyunda en fazla değeri sağlar." data-en="Focus first on no-badge technologies. Research that boosts construction, training, and basic stats provides the most value in the early game.">
+          Önce rozet gerektirmeyen teknolojilere odaklanın. İnşaat, eğitim ve temel stat bonusları veren araştırmalar erken oyunda en fazla değeri sağlar.
+        </div>
+      </div>
+
+      <div class="guide-card">
+        <div class="guide-card-icon">🦸</div>
+        <div class="guide-card-title" data-tr="Kahraman Geliştirme" data-en="Hero Development">Kahraman Geliştirme</div>
+        <div class="guide-card-text" data-tr="Tüm kahramanları eşit geliştirmeye çalışmak yerine 4-5 temel kahramanınıza odaklanın. Kaynakları geniş yaymak ilerlemenizi yavaşlatır." data-en="Instead of trying to level all heroes equally, focus on your core 4-5 heroes. Spreading resources too thin slows your progress.">
+          Tüm kahramanları eşit geliştirmeye çalışmak yerine 4-5 temel kahramanınıza odaklanın. Kaynakları geniş yaymak ilerlemenizi yavaşlatır.
+        </div>
+      </div>
+
+      <div class="guide-card">
+        <div class="guide-card-icon">⚔️</div>
+        <div class="guide-card-title" data-tr="İttifak Düellosu" data-en="Alliance Duel">İttifak Düellosu</div>
+        <div class="guide-card-text" data-tr="İşe alım biletleri, kahraman parçaları ve anahtarlar gibi eşyaları hafta boyunca biriktirin. Bu eşyaları yalnızca en fazla puan verdikleri İttifak Düellosu günlerinde kullanın." data-en="Save items like recruitment tickets, hero fragments, and wrenches throughout the week. Use them only on Alliance Duel days when they give the most points.">
+          İşe alım biletleri, kahraman parçaları ve anahtarlar gibi eşyaları hafta boyunca biriktirin. Bu eşyaları yalnızca en fazla puan verdikleri İttifak Düellosu günlerinde kullanın.
+        </div>
+      </div>
+
+      <div class="guide-card">
+        <div class="guide-card-icon">📍</div>
+        <div class="guide-card-title" data-tr="Birlikte Kal" data-en="Stay Together">Birlikte Kal</div>
+        <div class="guide-card-text" data-tr="İttifak işaretine ışınlanın ve birlikte kalın. Grubun uzağındaysanız ittifak sizi savaşta, günlük etkinliklerde veya başka bir şeyde destekleyemez." data-en="Teleport to the alliance waypoint and stay together. If you're away from the group, the alliance can't support you in combat, daily activities, or anything else.">
+          İttifak işaretine ışınlanın ve birlikte kalın. Grubun uzağındaysanız ittifak sizi savaşta, günlük etkinliklerde veya başka bir şeyde destekleyemez.
+        </div>
+      </div>
+
+      <div class="guide-card">
+        <div class="guide-card-icon">🛡️</div>
+        <div class="guide-card-title" data-tr="Kalkan Kullanımı" data-en="Shield Up">Kalkan Kullanımı</div>
+        <div class="guide-card-text" data-tr="Ana birliğiniz karargahta değilken biri saldırıya geçmek üzereyse hemen rastgele ışınlanma kullanın. Düşman ışınlanma harcayacak, siz güvende olacaksınız." data-en="If your main formation isn't in the HQ and someone is about to attack, use a random teleport immediately. The attacker wastes their teleport while you stay safe.">
+          Ana birliğiniz karargahta değilken biri saldırıya geçmek üzereyse hemen rastgele ışınlanma kullanın. Düşman ışınlanma harcayacak, siz güvende olacaksınız.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>AnKa</span> İttifakı &nbsp;✦&nbsp; Anadolu Kartalları &nbsp;✦&nbsp; Last Z Survival Shooter
+</footer>
+
+<script>
+  let currentLang = 'tr';
+
+  function showSection(id, linkEl) {
+    document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+    if (linkEl) linkEl.classList.add('active');
+    window.scrollTo(0, 0);
+    return false;
+  }
+
+  function toggleLang() {
+    currentLang = currentLang === 'tr' ? 'en' : 'tr';
+    document.querySelectorAll('[data-tr]').forEach(el => {
+      el.textContent = el.getAttribute('data-' + currentLang);
+    });
+    document.querySelector('.lang-btn').textContent = currentLang === 'tr' ? 'TR / EN' : 'EN / TR';
+  }
+
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    a.addEventListener('click', e => e.preventDefault());
+  });
+</script>
 </body>
 </html>
